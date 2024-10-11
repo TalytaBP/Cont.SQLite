@@ -16,15 +16,15 @@ import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
-    private val bancoDados by lazy{
+    private val bancoDados by lazy {
         DatabaseHelper(this)
     }
 
-    private lateinit var editNomeProduto:EditText
-    private lateinit var btnSalvar:Button
-    private lateinit var btnListar:Button
-    private lateinit var btnAtualizar:Button
-    private lateinit var btnDeletar:Button
+    private lateinit var editNomeProduto: EditText
+    private lateinit var btnSalvar: Button
+    private lateinit var btnListar: Button
+    private lateinit var btnAtualizar: Button
+    private lateinit var btnDeletar: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,32 +43,32 @@ class MainActivity : AppCompatActivity() {
         btnDeletar = findViewById(R.id.btnDeletar)
 
 
-        btnSalvar.setOnClickListener{
+        btnSalvar.setOnClickListener {
             salvar()
         }
 
-        btnListar.setOnClickListener{
+        btnListar.setOnClickListener {
             listar()
         }
 
-        btnAtualizar.setOnClickListener{
+        btnAtualizar.setOnClickListener {
             atualizar()
         }
 
-        btnDeletar.setOnClickListener{
+        btnDeletar.setOnClickListener {
             remover()
         }
 
 
     }
 
-    private fun salvar(){
+    private fun salvar() {
         val nomeProduto = editNomeProduto.text.toString()
 
         val produtoDAO = ProdutoDAO(this)
 
         val produto = Produto(
-            -1,nomeProduto,"descrição..."
+            -1, nomeProduto, "descrição..."
         )
 
         produtoDAO.salvar(produto)
@@ -76,43 +76,33 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun listar(){
-        val sql = "SELECT * FROM produtos"
-        val cursor = bancoDados.readableDatabase.rawQuery(sql, null)
+    private fun listar() {
+        val produtoDAO = ProdutoDAO(this)
+        val listaProduto = produtoDAO.listar()
 
-        while (cursor.moveToNext()){
-            val idProduto = cursor.getInt(0)
-            val titulo = cursor.getString(1)
-            val descricao = cursor.getString(2)
-
-            Log.i("db_info","PRODUTOS: $idProduto - $titulo - $descricao")
+        if(listaProduto.isNotEmpty()){
+            listaProduto.forEach{produto ->
+                Log.i("db_info", "${produto.titulo} - ${produto.descricao}")
+            }
         }
     }
 
-    private fun atualizar(){
+    private fun atualizar() {
         val nomeProduto = editNomeProduto.text.toString()
 
-        val sql = "UPDATE produtos SET titulo = '$nomeProduto' WHERE id_produto=2;"
+        val produtoDAO = ProdutoDAO(this)
 
-        try{
-            bancoDados.writableDatabase.execSQL(sql)
-            Log.i("db_info","Registro atualizado com suceso.")
-        }catch (e:Exception){
-            e.printStackTrace()
-            Log.i("db_info","Error ao atualizar..")
-        }
+        val produto = Produto(
+            -1, nomeProduto, "descrição..."
+        )
+
+        produtoDAO.atualizar(produto)
     }
 
-    private fun remover(){
-        val sql = "DELETE FROM produtos WHERE id_produto=1"
+    private fun remover() {
 
-        try {
-            bancoDados.writableDatabase.execSQL(sql)
-            Log.i("db_info","Produto removido com sucesso..")
-        }catch (e:Exception){
-            e.printStackTrace()
-            Log.i("db_info","Error ao excluir..")
-        }
+        val produtoDAO= ProdutoDAO(this)
+        produtoDAO.remover(2)
+
     }
-
 }

@@ -14,14 +14,19 @@ class DatabaseHelper(context:Context) : SQLiteOpenHelper(
 
     context,"loja",null,1
 ) {
+    companion object{
+        const val TABELA = "produtos"
+        const val ID_PRODUTO = "id_produto"
+        const val TITULO = "titulo"
+        const val DESCRICAO = "descricao"
+    }
     override fun onCreate(db: SQLiteDatabase?) {
         //É executado um única vez, quando o app é instalado
-        val sql = "CREATE TABLE IF NOT EXISTS produtos(" +
-                "id_produto INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-                "titulo VARCHAR(100)," +
-                "descricao TEXT" +
+        val sql = "CREATE TABLE IF NOT EXISTS $TABELA(" +
+                "$ID_PRODUTO INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                "$TITULO VARCHAR(100)," +
+                "$DESCRICAO TEXT" +
                 ");"
-
         try{
             db?.execSQL(sql)
             Log.i("db_info","Tabela criada com sucesso")
@@ -29,11 +34,8 @@ class DatabaseHelper(context:Context) : SQLiteOpenHelper(
             e.printStackTrace()
             Log.i("db_info","Error ao criar tabela")
         }
-
     }
-
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
         //É executado quando há mudança de versão do banco
     }
-
 }
