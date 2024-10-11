@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnListar: Button
     private lateinit var btnAtualizar: Button
     private lateinit var btnDeletar: Button
+    private lateinit var btnAlert:Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +44,11 @@ class MainActivity : AppCompatActivity() {
         btnListar = findViewById(R.id.btnListar)
         btnAtualizar = findViewById(R.id.btnAtualizar)
         btnDeletar = findViewById(R.id.btnDeletar)
+        btnAlert = findViewById(R.id.btnAlert)
+
+        btnAlert.setOnClickListener{
+            caixaLogAlert()
+        }
 
 
         btnSalvar.setOnClickListener {
@@ -58,9 +66,23 @@ class MainActivity : AppCompatActivity() {
         btnDeletar.setOnClickListener {
             remover()
         }
-
-
     }
+    private fun caixaLogAlert(){
+        val alertBuilder = AlertDialog.Builder(this)
+        alertBuilder.setTitle("Confirmar exclusão do item")
+        alertBuilder.setMessage("Tem certeza que deseja remover?")
+
+        alertBuilder.setNegativeButton("Cancelar"){dialog,posicao->
+            Toast.makeText(this, "Cancelar clicado", Toast.LENGTH_LONG).show()
+        }
+        alertBuilder.setPositiveButton("Remover") { dialog, posicao ->
+            Toast.makeText(this, "Remover clicado", Toast.LENGTH_LONG).show()
+        }
+        alertBuilder.setCancelable(false)
+            val alertDialog = alertBuilder.create()
+            alertDialog.show()
+    }
+
 
     private fun salvar() {
         val nomeProduto = editNomeProduto.text.toString()
